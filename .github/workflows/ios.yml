@@ -1,0 +1,23 @@
+name: iOS starter workflow
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Test default scheme using any available iPhone simulator
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Compile Asset Catalog
+        env:
+          scheme: ${{ 'default' }}
+          platform: ${{ 'iphoneos' }}
+        run: |
+          xcrun actool ./Assets.xcassets --compile . --platform iphoneos --minimum-deployment-target 11.0 --app-icon AppIcon --output-partial-info-plist info.plist --output-format human-readable-text --notices --warnings --errors .
