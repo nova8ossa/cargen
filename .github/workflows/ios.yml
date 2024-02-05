@@ -18,13 +18,11 @@ jobs:
       - name: Read Task Id
         run: |
           echo "taskId=$(cat task.txt)" >> $GITHUB_ENV
-          mkdir ./temp
-          cp task.txt ./temp
         
-      # - name: Compile Asset Catalog
-      #   run: |
-      #     mkdir ./temp
-      #     xcrun actool ./Assets.xcassets --compile ./temp --platform iphoneos --minimum-deployment-target 11.0 --app-icon AppIcon --output-partial-info-plist info.plist --output-format human-readable-text --notices --warnings --errors .
+      - name: Compile Asset Catalog
+        run: |
+          mkdir ./temp
+          xcrun actool ./Assets.xcassets --compile ./temp --platform iphoneos --minimum-deployment-target 11.0 --app-icon AppIcon --output-partial-info-plist info.plist --output-format human-readable-text --notices --warnings --errors .
 
       - name: Archive Release
         uses: thedoctor0/zip-release@0.7.5
@@ -34,19 +32,15 @@ jobs:
           directory: './temp'
           exclusions: '*.git* /*node_modules/* .editorconfig'
 
-      - name: list zip
-        run: |
-          ls -ltr ./temp
-
-      # - name: Save to OSS  
-      #   uses: YangHanlin/oss-deployment-action@v1
-      #   with:
-      #     oss-endpoint: oss-cn-shanghai.aliyuncs.com
-      #     oss-accesskey-id: ${{ secrets.OSS_ACCESSKEY_ID }}
-      #     oss-accesskey-secret: ${{ secrets.OSS_ACCESSKEY_SECRET }}
-      #     oss-path: oss://halovoice/assets
-      #     local-path: '${{ env.taskId }}.zip'
-      #     debug: true
+      - name: Save to OSS  
+        uses: YangHanlin/oss-deployment-action@v1
+        with:
+          oss-endpoint: oss-cn-shanghai.aliyuncs.com
+          oss-accesskey-id: ${{ secrets.OSS_ACCESSKEY_ID }}
+          oss-accesskey-secret: ${{ secrets.OSS_ACCESSKEY_SECRET }}
+          oss-path: oss://halovoice/assets
+          local-path: './temp/${{ env.taskId }}.zip'
+          debug: true
 
       - name: Webhook
         uses: joelwmale/webhook-action@master
