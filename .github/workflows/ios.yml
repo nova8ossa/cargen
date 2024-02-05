@@ -14,10 +14,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
+      - name: Read Task Id
+        run: |
+          echo "taskId=$(cat task.txt)" >> $GITHUB_ENV
+        
+      - name: Compile Asset Catalog
+        run: |
+          mkdir ./temp
+          xcrun actool ./Assets.xcassets --compile ./temp --platform iphoneos --minimum-deployment-target 11.0 --app-icon AppIcon --output-partial-info-plist info.plist --output-format human-readable-text --notices --warnings --errors .
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: '${{ taskId }}.zip'
+          directory: './temp'
+          exclusions: '*.git* /*node_modules/* .editorconfig'
+
+      - name: Save to OSS  
+        uses: YangHanlin/oss-deployment-action@v1
+        with:
+          oss-endpoint: oss-cn-shanghai.aliyuncs.com
+          oss-accesskey-id: ${{ secrets.OSS_ACCESSKEY_ID }}
+          oss-accesskey-secret: ${{ secrets.OSS_ACCESSKEY_SECRET }}
+          oss-path: oss://halovoice/assets
+          local-path: '${{ taskId }}.zip'
+          debug: true
 
       - name: Webhook
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"event": "deployment", "repository": "joelwmale/webhook-action"}'
+          body: '{"event": "deployment", "taskId": ${{ taskId }}}'
