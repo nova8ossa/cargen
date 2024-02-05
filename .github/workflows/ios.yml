@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build .Car by Image Assets
+    name: Generate Car Assets
     runs-on: macos-latest
 
     steps:
@@ -37,6 +37,7 @@ jobs:
       - name: list zip
         run: |
           ls -ltr
+          ls ./temp -ltr
 
       # - name: Save to OSS  
       #   uses: YangHanlin/oss-deployment-action@v1
@@ -52,4 +53,4 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"event": "deployment", "taskId": ${{ env.taskId }}}'
+          body: '{"event": "deployment", "taskId": "${{ env.taskId }}"}'
