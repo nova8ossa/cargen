@@ -38,7 +38,7 @@ jobs:
           oss-endpoint: oss-cn-shanghai.aliyuncs.com
           oss-accesskey-id: ${{ secrets.OSS_ACCESSKEY_ID }}
           oss-accesskey-secret: ${{ secrets.OSS_ACCESSKEY_SECRET }}
-          oss-path: oss://halovoice/assets
+          oss-path: 'oss://halovoice/assets/${{ env.taskId }}.zip'
           local-path: './temp/${{ env.taskId }}.zip'
           debug: true
 
