@@ -36,8 +36,7 @@ jobs:
 
       - name: list zip
         run: |
-          ls -ltr
-          ls ./temp -ltr
+          ls -ltr ./temp
 
       # - name: Save to OSS  
       #   uses: YangHanlin/oss-deployment-action@v1
