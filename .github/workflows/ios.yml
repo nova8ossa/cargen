@@ -15,14 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
-      - name: Compile Asset Catalog
-        env:
-          scheme: ${{ 'default' }}
-          platform: ${{ 'iphoneos' }}
-        run: |
-          mkdir ./temp
-          xcrun actool ./Assets.xcassets --compile ./temp --platform iphoneos --minimum-deployment-target 11.0 --app-icon AppIcon --output-partial-info-plist info.plist --output-format human-readable-text --notices --warnings --errors .
-
       - name: Save to OSS  
         uses: YangHanlin/oss-deployment-action@v1
         with:
@@ -32,3 +24,8 @@ jobs:
           oss-path: oss://halovoice/assets
           local-path: ./temp
           debug: true
+
+      - name: Web Hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
